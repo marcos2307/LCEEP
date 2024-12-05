@@ -22,7 +22,8 @@ module pwm(
 input clk,
 input en,
 input [9:0] d,
-output reg S
+output reg S,
+output reg interrupt
     );
 
 reg [9:0] counter = 0;
@@ -33,6 +34,10 @@ always@(posedge clk) begin
 	if(counter == 1000) begin
 		counter = 0;
 		d_stored = d;
+		interrupt = 1;
+	end
+	else if (counter == 500) begin
+	   interrupt = 0;
 	end
 end
 

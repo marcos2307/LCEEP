@@ -23,7 +23,8 @@ input clk,
 input clk_4us,
 input [9:0] d,
 output s,
-output nots
+output nots,
+output interrupt
     );
 
 
@@ -47,7 +48,8 @@ always@(posedge clk)
 pwm pwm1(
 .clk(clock_500ns),
 .d(d),
-.S(S)
+.S(S),
+.interrupt(interrupt)
  );
  
 dead_time dt1(.clk(clk_4us),
