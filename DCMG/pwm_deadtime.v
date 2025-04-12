@@ -20,39 +20,22 @@
 //////////////////////////////////////////////////////////////////////////////////
 module pwm_deadtime(
 input clk,
-input clk_4us,
 input [9:0] d,
 output s,
-output nots,
-output interrupt
+output nots
     );
 
 
 wire S;
 
-//reloj de 1us
-reg reloj;
-reg [7:0] counter = 0; //cuenta hasta 100 * 10ns = 1us
 
-always@(posedge clk)
-    begin
-        counter = counter + 1;
-        if(counter == 1)
-            reloj = 1;
-        else if(counter == 50)
-            reloj = 0;
-        else if(counter == 100) //1us
-            counter = 0;
-    end
-	
 pwm pwm1(
-.clk(reloj),
+.clk(clk),
 .d(d),
-.S(S),
-.interrupt(interrupt)
+.S(S)
  );
  
-dead_time dt1(.clk(clk_4us),
+dead_time dt1(.clk(clk),
 	.S(S),
 	.s(s),
 	.nots(nots));

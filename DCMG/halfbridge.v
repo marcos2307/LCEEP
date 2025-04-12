@@ -24,31 +24,42 @@ module halfbridge(
 	input [9:0] d_halfbridge,
 	output halfbridge_s,
 	output halfbridge_nots,
-	output clk_int
+	output reg clk_int
     );
 
-	//reloj de 4us
-	reg clock_4us;
-	reg [7:0] counter = 0; //cuenta hasta 400 * 10ns = 4us
+	//reloj de 6us
+	reg clock_6us;
+	reg [9:0] counter = 0; //cuenta hasta 600 * 10ns = 6us
 
 	always@(posedge clk)
 		begin
 			counter = counter + 1;
 			if(counter == 1)
-				clock_4us = 1;
-			else if(counter == 200)
-				clock_4us = 0;
-			else if(counter == 400) //400 * 10ns = 4us
+				clock_6us = 1;
+			else if(counter == 300)
+				clock_6us = 0;
+			else if(counter == 600) //600 * 10ns = 6us
 				counter = 0;
 		end
 	
+	//generador de interrupcion
+	reg [13:0] counter_int = 0; //cuenta hasta 10
+	always@(posedge clock_6us)
+		begin
+			counter_int = counter_int + 1;
+			if(counter_int == 1)
+				clk_int = 1;
+			else if(counter_int == 5)
+				clk_int = 0;
+			else if(counter_int == 10) //60us
+				counter_int = 0;
+		end
+
 	pwm_deadtime fpga_halfbridge(
-	.clk(clk),
-    .clk_4us(clock_4us),
+    .clk(clock_6us),
 	.d(d_halfbridge),
 	.s(halfbridge_s),
-	.nots(halfbridge_nots),
-    .interrupt(clk_int)
+	.nots(halfbridge_nots)
 	);
 
 

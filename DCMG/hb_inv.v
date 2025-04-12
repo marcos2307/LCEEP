@@ -18,11 +18,12 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module boost(
+module hb_inv(
 	input clk,
     input ce,
-	input [9:0] d_boost,
-	output boost_s,
+	input [9:0] d_inv,
+	output inv_s,
+    output inv_nots,
 	output reg clk_int
     );
     
@@ -48,16 +49,18 @@ module boost(
 			counter_int = counter_int + 1;
 			if(counter_int == 1)
 				clk_int = 1;
-			else if(counter_int == 5)
+			else if(counter_int == 5)//30us
 				clk_int = 0;
 			else if(counter_int == 10)//60us
 				counter_int = 0;
 		end
 
-	pwm fpga_boost(
+	pwm_deadtime fpga_inv(
 	.clk(clock_6us),
-	.d(d_boost),
-	.S(boost_s)
+	.d(d_inv),
+	.s(inv_s),
+	.nots(inv_nots)
 	);
+
 
 endmodule

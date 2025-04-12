@@ -22,8 +22,7 @@ module pwm(
 input clk,
 input en,
 input [9:0] d,
-output reg S,
-output reg interrupt
+output reg S
     );
 
 reg [9:0] counter = 0;
@@ -31,18 +30,14 @@ reg [9:0] d_stored = 0;
 
 always@(posedge clk) begin
 	counter = counter + 1;
-	if(counter == 100) begin
+	if(counter == 10) begin //no necesariamente coincide con la interrupción 40*6us = 240us
 		counter = 0;
 		d_stored = d;
-		interrupt = 1;
-	end
-	else if (counter == 50) begin
-	   interrupt = 0;
 	end
 end
 
 always@(posedge clk) begin
-	if(d_stored >= counter) begin
+	if(d_stored > counter) begin
 		S = 1;
 	end
 	else begin
